@@ -1,0 +1,11 @@
+terraform state list
+terraform state show aws_instance.web
+terraform show
+
+For windows
+terraform state list | Select-String s3
+terraform state list | Select-String instance
+terraform state list | Select-String vpc
+terraform state list | Select-String dynamodb
+terraform state list | Select-String db
+
