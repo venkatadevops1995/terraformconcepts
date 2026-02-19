@@ -1,0 +1,78 @@
+trigger:
+  branches:
+    include:
+      - main
+
+pool:
+  name: mylocalpool   # Windows self-hosted agent
+
+stages:
+
+# -------------------------
+# STAGE 1: Terraform Plan
+# -------------------------
+- stage: TerraformPlan
+  displayName: Terraform Plan
+  jobs:
+  - job: plan
+    steps:
+    - checkout: self
+
+    # Install Terraform (safe method)
+    - powershell: |
+        Invoke-WebRequest -Uri https://releases.hashicorp.com/terraform/1.7.5/terraform_1.7.5_windows_amd64.zip -OutFile terraform.zip
+        Expand-Archive terraform.zip -DestinationPath terraform-bin
+
+        # Add Terraform to PATH for pipeline
+        Write-Host "##vso[task.prependpath]$(System.DefaultWorkingDirectory)\terraform-bin"
+
+        terraform --version
+      displayName: Install Terraform
+
+    # Terraform Init (infra folder)
+    - script: terraform init
+      workingDirectory: infra
+      displayName: Terraform Init
+
+    # Terraform Plan
+    - script: terraform plan -out=tfplan
+      workingDirectory: infra
+      displayName: Terraform Plan
+
+    # Publish plan artifact
+    - publish: infra/tfplan
+      artifact: tfplan
+
+
+# -------------------------
+# STAGE 2: Terraform Apply
+# -------------------------
+- stage: TerraformApply
+  displayName: Terraform Apply
+  dependsOn: TerraformPlan
+  jobs:
+  - job: apply
+    steps:
+    - checkout: self
+
+    # Install Terraform
+    - powershell: |
+        Invoke-WebRequest -Uri https://releases.hashicorp.com/terraform/1.7.5/terraform_1.7.5_windows_amd64.zip -OutFile terraform.zip
+        Expand-Archive terraform.zip -DestinationPath terraform-bin
+        Write-Host "##vso[task.prependpath]$(System.DefaultWorkingDirectory)\terraform-bin"
+        terraform --version
+      displayName: Install Terraform
+
+    # Download plan artifact
+    - download: current
+      artifact: tfplan
+
+    # IMPORTANT — Init again
+    - script: terraform init
+      workingDirectory: infra
+      displayName: Terraform Init Again
+
+    # Apply using saved plan
+    - script: terraform apply -auto-approve
+      workingDirectory: infra
+      displayName: Terraform Apply
