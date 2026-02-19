@@ -4,4 +4,44 @@ create below in powershell
     $env:AWS_ACCESS_KEY_ID = "$(AWS_ACCESS_KEY_ID)"
     $env:AWS_SECRET_ACCESS_KEY = "$(AWS_SECRET_ACCESS_KEY)"
     $env:AWS_DEFAULT_REGION = "us-east-1"
-  displayName: Set AWS Credentials
+  
+====================================================================
+
+create s3 bucket 
+Enable:
+
+Versioning ✅
+
+Encryption ✅
+
+create dynamodb table with partition key   manually
+
+Add Backend Block in Terraform
+
+==============================================================================
+
+How This Works
+
+Every run
+
+terraform init
+
+will:
+
+Connect to S3
+
+Pull latest state
+
+Lock via DynamoDB
+
+Update state after apply
+
+Reinitialize
+
+After adding backend:
+
+Run once:
+
+terraform init -migrate-state
+
+Terraform will move local state → S3.
