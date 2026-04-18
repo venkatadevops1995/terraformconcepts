@@ -46,3 +46,6 @@ moved {
 }
 
 👉 This avoids manual state commands and is safer for CI/CD
+=====================================================================
+
+if moving some more resources then change the files inside module and also the root module file(values)
