@@ -48,4 +48,7 @@ moved {
 👉 This avoids manual state commands and is safer for CI/CD
 =====================================================================
 
-if moving some more resources then change the files inside module and also the root module file(values)
+if moving some more resources then change the files inside module and also the root module file(values) then use import command 
+with module not resource
+
+terraform import 'module.compute.aws_instance.this["linux"]' i-06ad7bfd736d2b9b8
