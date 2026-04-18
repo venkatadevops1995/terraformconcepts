@@ -1,0 +1,48 @@
+
+First write terraform code and import using terraform import command and verify using terraform plan you should get below
+No changes. Your infrastructure matches the configuration.
+For terraform apply you should get 0 added o changed and zero destroyed then modularise them after modularising move terraform state of each resource to module as mentione below 
+
+
+
+terraform state mv aws_vpc.myvpc module.network.aws_vpc.myvpc
+
+terraform state mv aws_subnet.subnet1 module.network.aws_subnet.subnet1
+terraform state mv aws_subnet.subnet2 module.network.aws_subnet.subnet2
+
+terraform state mv aws_instance.test module.compute.aws_instance.test
+=====================================================================================
+now terraform plan will give no changes &apply will give  0 added o changed and zero destroyed
+
+=======================================================================================================
+Pro-Level Insight (Important for your scale)
+
+Since you mentioned hundreds of resources earlier, doing terraform state mv manually is painful.
+
+Better approaches:
+
+Option 1: Script it
+
+Use:
+
+terraform state list
+
+Then generate state mv commands via script.
+
+=================================================================
+
+Option 2: Use moved blocks (Terraform ≥1.1)
+
+Cleaner way 👇
+
+moved {
+  from = aws_vpc.myvpc
+  to   = module.network.aws_vpc.myvpc
+}
+
+moved {
+  from = aws_subnet.subnet1
+  to   = module.network.aws_subnet.subnet1
+}
+
+👉 This avoids manual state commands and is safer for CI/CD
