@@ -1,5 +1,7 @@
 
-First write terraform code and import using terraform import command and verify using terraform plan you should get below
+First write terraform code 
+
+and import using terraform import command and verify using terraform plan you should get below
 No changes. Your infrastructure matches the configuration.
 For terraform apply you should get 0 added o changed and zero destroyed then modularise them after modularising move terraform state of each resource to module as mentione below 
 
