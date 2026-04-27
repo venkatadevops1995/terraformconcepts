@@ -1,0 +1,13 @@
+first write imports.tf as below
+import {
+to = aws_vpc.tagname
+id = "vpcid"
+}
+after that generate generated.tf file
+
+using command terraform plan -generate-config-out=generated.tf 
+
+once file is generated run terraform plan if errors rectify them we should get X to import 0 to add 0 to chnage and 0 to destroy
+
+then use terraform apply those resources will be imported and will be in terraform state
+then write correct file from generated.tf in this case vpc.tf and delete generated.tf and use terraform plan which should show no changes 
