@@ -1,6 +1,6 @@
 first write imports.tf as below
 import {
-to = aws_vpc.tagname
+to = aws_vpc.anynameforresourceblock
 id = "vpcid"
 }
 after that generate generated.tf file
